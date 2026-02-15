@@ -34,30 +34,35 @@
     {
       "name": "append-clipboard-to-file",
       "title": "Append Text from Clipboard to File",
+      "subtitle": "Append Text to File",
       "description": "Pick an entry from the clipboard history and append it to a file.",
       "mode": "view"
     },
     {
       "name": "append-text-to-file",
       "title": "Append Text to File",
+      "subtitle": "Append Text to File",
       "description": "Edit text before appending to a file.",
       "mode": "view"
     },
     {
       "name": "quick-append-clipboard-to-last-appended-file",
       "title": "Quick Append Current Clipboard Text to Last Appended File",
+      "subtitle": "Append Text to File",
       "description": "Append latest clipboard text entry to the last appended file.",
       "mode": "no-view"
     },
     {
       "name": "undo-last-append",
       "title": "Undo Last Append",
+      "subtitle": "Append Text to File",
       "description": "Revert the most recent append operation.",
       "mode": "no-view"
     },
     {
       "name": "open-last-appended-file",
       "title": "Open Last Appended File",
+      "subtitle": "Append Text to File",
       "description": "Open the most recently appended file.",
       "mode": "no-view"
     }

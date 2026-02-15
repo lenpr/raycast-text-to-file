@@ -7,19 +7,6 @@ import { type InsertPosition } from "./formatting";
 
 export type SeparatorRule = "single-newline" | "blank-line" | "custom";
 
-interface RawPreferences {
-  roots?: string;
-  allowedExtensions?: string;
-  searchExcludes?: string;
-  searchMaxDepth?: string;
-  separatorRule?: SeparatorRule;
-  customSeparator?: string;
-  ensureTrailingNewline?: boolean;
-  timestampFormat?: string;
-  defaultClipboardOffset?: string;
-  defaultInsertPosition?: InsertPosition;
-}
-
 export interface ResolvedPreferences {
   roots: string[];
   allowedExtensions: string[];
@@ -122,7 +109,7 @@ function parseSearchMaxDepth(value: string | undefined): number {
 }
 
 export function getResolvedPreferences(): ResolvedPreferences {
-  const prefs = getPreferenceValues<RawPreferences>();
+  const prefs = getPreferenceValues<Preferences>();
 
   return {
     roots: normalizeRoots(prefs.roots),

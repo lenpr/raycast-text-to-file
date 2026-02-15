@@ -11,5 +11,5 @@
     "types": ["node", "react"],
     "baseUrl": "."
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "raycast-env.d.ts"]
 }
