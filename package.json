@@ -3,7 +3,7 @@
   "name": "append-to-file",
   "title": "Append Text to File",
   "description": "Append text to markdown/text files quickly. Either select text from clipboard history or enter text to append without opening files, and was built with AI-assisted development.",
-  "icon": "append-icon.png",
+  "icon": "text-to-file-icon.png",
   "author": "brusik",
   "license": "MIT",
   "categories": [
