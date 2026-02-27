@@ -197,6 +197,14 @@ export async function findCandidateFiles(
       options.searchMaxDepth,
     );
     files = dedupeFiles([...files, ...fallback]);
+  } else if (files.length === 0) {
+    const fallback = await findWithRecursiveScan(
+      options.roots,
+      options.allowedExtensions,
+      options.searchExcludes,
+      options.searchMaxDepth,
+    );
+    files = dedupeFiles([...files, ...fallback]);
   }
 
   const existing = await filterExistingFiles(files);
