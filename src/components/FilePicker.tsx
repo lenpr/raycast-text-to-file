@@ -40,9 +40,9 @@ export function FilePicker(props: FilePickerProps) {
       searchMaxDepth: preferences.searchMaxDepth,
     }),
     [
-      preferences.allowedExtensions,
-      preferences.roots,
-      preferences.searchExcludes,
+      JSON.stringify(preferences.roots),
+      JSON.stringify(preferences.allowedExtensions),
+      JSON.stringify(preferences.searchExcludes),
       preferences.searchMaxDepth,
     ],
   );
