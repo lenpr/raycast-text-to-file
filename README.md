@@ -92,4 +92,4 @@ This extension is intentionally limited and focused. It was built with AI-assist
 
 If you use it daily, you can shape its defaults in preferences and share ideas for what would make it better.
 
-If you run into issues, check [Troubleshooting](docs/TROUBLESHOOTING.md).
+If you run into issues, check the [GitHub issues page](https://github.com/lenpr/raycast-text-to-file/issues) or open a new issue.
