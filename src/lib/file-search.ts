@@ -3,11 +3,7 @@ import { access, readdir } from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 import { getCachedFiles, getMruFiles, setCachedFiles, sortByMru } from "./cache";
-import {
-  filterByAsyncPredicate,
-  searchRootsInParallel,
-  searchRootsWithPartialFallback,
-} from "./file-search-concurrency";
+import { filterByAsyncPredicate, searchRootsWithPartialFallback } from "./file-search-concurrency";
 import { createPathExcluder, getRelativeDepth } from "./file-search-filters";
 
 const execFile = promisify(execFileCallback);
@@ -82,22 +78,6 @@ async function findRootWithSpotlight(
       .filter((filePath) => getRelativeDepth(root, filePath) <= searchMaxDepth)
       .filter((filePath) => !isExcluded(filePath, root)),
   );
-}
-
-async function findWithSpotlight(
-  roots: string[],
-  allowedExtensions: string[],
-  searchExcludes: string[],
-  searchMaxDepth: number,
-): Promise<{ files: string[]; failedRoots: string[] }> {
-  const summary = await searchRootsInParallel(roots, async (root) =>
-    findRootWithSpotlight(root, allowedExtensions, searchExcludes, searchMaxDepth),
-  );
-
-  return {
-    files: dedupeFiles(summary.files),
-    failedRoots: summary.failedRoots,
-  };
 }
 
 async function findWithRecursiveScan(
