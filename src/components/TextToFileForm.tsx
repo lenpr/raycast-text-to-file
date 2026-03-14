@@ -42,13 +42,7 @@ export function TextToFileForm(props: TextToFileFormProps) {
         />,
       );
     },
-    [
-      preferences.defaultInsertPosition,
-      props.initialInsertPosition,
-      props.navigationTitle,
-      push,
-      showInsertPosition,
-    ],
+    [preferences.defaultInsertPosition, props.initialInsertPosition, props.navigationTitle, push, showInsertPosition],
   );
 
   return (
@@ -57,26 +51,13 @@ export function TextToFileForm(props: TextToFileFormProps) {
       isLoading={props.isLoading}
       actions={
         <ActionPanel>
-          <Action.SubmitForm
-            title={props.submitTitle ?? "Choose File"}
-            onSubmit={handleSubmit}
-          />
+          <Action.SubmitForm title={props.submitTitle ?? "Choose File"} onSubmit={handleSubmit} />
         </ActionPanel>
       }
     >
-      <Form.TextArea
-        id="inputText"
-        title="Text"
-        value={text}
-        onChange={setText}
-        autoFocus
-      />
+      <Form.TextArea id="inputText" title="Text" value={text} onChange={setText} autoFocus />
       {showInsertPosition ? (
-        <Form.Dropdown
-          id="insertPosition"
-          title="Insert Position"
-          defaultValue={preferences.defaultInsertPosition}
-        >
+        <Form.Dropdown id="insertPosition" title="Insert Position" defaultValue={preferences.defaultInsertPosition}>
           <Form.Dropdown.Item value="end" title="End of File" />
           <Form.Dropdown.Item value="beginning" title="Beginning of File" />
         </Form.Dropdown>

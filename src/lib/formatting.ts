@@ -33,16 +33,10 @@ export function formatTimestamp(date: Date, format: string): string {
     ss: pad(date.getSeconds()),
   };
 
-  return Object.keys(map).reduce(
-    (acc, token) => acc.replaceAll(token, map[token]),
-    format,
-  );
+  return Object.keys(map).reduce((acc, token) => acc.replaceAll(token, map[token]), format);
 }
 
-export function applyAppendStyle(
-  inputText: string,
-  format: FormatInput,
-): string {
+export function applyAppendStyle(inputText: string, format: FormatInput): string {
   const normalized = trimTrailingNewlines(normalizeNewlines(inputText));
   if (normalized.trim().length === 0) {
     throw new Error("Nothing to append. Text is empty.");
@@ -63,10 +57,7 @@ export function applyAppendStyle(
         .map((line) => (line.length > 0 ? `> ${line}` : ">"))
         .join("\n");
     case "timestamp": {
-      const stamp = formatTimestamp(
-        format.now ?? new Date(),
-        format.timestampFormat || "YYYY-MM-DD HH:mm",
-      );
+      const stamp = formatTimestamp(format.now ?? new Date(), format.timestampFormat || "YYYY-MM-DD HH:mm");
       return `[${stamp}] ${normalized}`;
     }
     default:
@@ -80,11 +71,7 @@ export interface ComposeOptions {
   insertPosition?: InsertPosition;
 }
 
-export function composeAppendedContent(
-  existingText: string,
-  entry: string,
-  options: ComposeOptions,
-): string {
+export function composeAppendedContent(existingText: string, entry: string, options: ComposeOptions): string {
   const existingNormalized = normalizeNewlines(existingText);
   const entryNormalized = trimTrailingNewlines(normalizeNewlines(entry));
 
@@ -92,13 +79,10 @@ export function composeAppendedContent(
     throw new Error("Nothing to append. Text is empty.");
   }
 
-  const separator =
-    options.separator.length > 0 ? normalizeNewlines(options.separator) : "\n";
+  const separator = options.separator.length > 0 ? normalizeNewlines(options.separator) : "\n";
 
   if (existingNormalized.length === 0) {
-    return options.ensureTrailingNewline
-      ? `${entryNormalized}\n`
-      : entryNormalized;
+    return options.ensureTrailingNewline ? `${entryNormalized}\n` : entryNormalized;
   }
 
   const existingTrimmedEnd = trimTrailingNewlines(existingNormalized);
@@ -108,7 +92,5 @@ export function composeAppendedContent(
       ? `${entryNormalized}${separator}${trimLeadingNewlines(existingTrimmedEnd)}`
       : `${existingTrimmedEnd}${separator}${entryNormalized}`;
 
-  return options.ensureTrailingNewline
-    ? `${trimTrailingNewlines(merged)}\n`
-    : merged;
+  return options.ensureTrailingNewline ? `${trimTrailingNewlines(merged)}\n` : merged;
 }

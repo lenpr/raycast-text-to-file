@@ -8,10 +8,7 @@ function makeTempPath(filePath: string): string {
   return path.join(directory, `.${base}.tmp-${nonce}`);
 }
 
-export async function atomicWriteFile(
-  filePath: string,
-  content: Buffer,
-): Promise<void> {
+export async function atomicWriteFile(filePath: string, content: Buffer): Promise<void> {
   const tempPath = makeTempPath(filePath);
   let tempWritten = false;
 

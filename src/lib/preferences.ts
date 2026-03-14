@@ -30,8 +30,7 @@ function parseList(input: string | undefined): string[] {
 
 function expandHome(inputPath: string): string {
   if (inputPath === "~") return homedir();
-  if (inputPath.startsWith("~/"))
-    return path.join(homedir(), inputPath.slice(2));
+  if (inputPath.startsWith("~/")) return path.join(homedir(), inputPath.slice(2));
   return inputPath;
 }
 
@@ -61,19 +60,14 @@ function normalizeExtensions(extensionsInput: string | undefined): string[] {
 
 function normalizeSearchExcludes(input: string | undefined): string[] {
   const parsed = parseList(input);
-  return Array.from(
-    new Set(parsed.map((entry) => entry.trim()).filter(Boolean)),
-  );
+  return Array.from(new Set(parsed.map((entry) => entry.trim()).filter(Boolean)));
 }
 
 function decodeEscapes(value: string): string {
   return value.replace(/\\n/g, "\n").replace(/\\t/g, "\t");
 }
 
-function resolveSeparator(
-  rule: SeparatorRule | undefined,
-  customSeparator: string | undefined,
-): string {
+function resolveSeparator(rule: SeparatorRule | undefined, customSeparator: string | undefined): string {
   if (rule === "blank-line") return "\n\n";
   if (rule === "custom") {
     const normalized = decodeEscapes(customSeparator?.trim() ?? "");
@@ -93,9 +87,7 @@ function parseClipboardOffset(value: string | undefined): number {
   return parsed;
 }
 
-function parseInsertPosition(
-  value: InsertPosition | undefined,
-): InsertPosition {
+function parseInsertPosition(value: InsertPosition | undefined): InsertPosition {
   if (value === "beginning") return "beginning";
   return "end";
 }

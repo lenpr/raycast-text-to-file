@@ -2,15 +2,11 @@ import { execFile as execFileCallback } from "node:child_process";
 import { access, readdir } from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
-import {
-  getCachedFiles,
-  getMruFiles,
-  setCachedFiles,
-  sortByMru,
-} from "./cache";
+import { getCachedFiles, getMruFiles, setCachedFiles, sortByMru } from "./cache";
 import {
   filterByAsyncPredicate,
   searchRootsInParallel,
+  searchRootsWithPartialFallback,
 } from "./file-search-concurrency";
 import { createPathExcluder, getRelativeDepth } from "./file-search-filters";
 
@@ -45,18 +41,10 @@ function buildCacheKey(
 }
 
 function getOptionsCacheKey(options: FileSearchOptions): string {
-  return buildCacheKey(
-    options.roots,
-    options.allowedExtensions,
-    options.searchExcludes,
-    options.searchMaxDepth,
-  );
+  return buildCacheKey(options.roots, options.allowedExtensions, options.searchExcludes, options.searchMaxDepth);
 }
 
-function matchesExtension(
-  filePath: string,
-  allowedExtensions: string[],
-): boolean {
+function matchesExtension(filePath: string, allowedExtensions: string[]): boolean {
   if (allowedExtensions.length === 0) return true;
   const ext = path.extname(filePath).toLowerCase();
   return allowedExtensions.includes(ext);
@@ -110,9 +98,7 @@ async function findWithRecursiveScan(
   const matches: string[] = [];
 
   for (const root of roots) {
-    const stack: Array<{ directory: string; depth: number }> = [
-      { directory: root, depth: 0 },
-    ];
+    const stack: Array<{ directory: string; depth: number }> = [{ directory: root, depth: 0 }];
 
     while (stack.length > 0) {
       const current = stack.pop() as { directory: string; depth: number };
@@ -169,9 +155,7 @@ async function filterExistingFiles(files: string[]): Promise<string[]> {
   );
 }
 
-export async function findCandidateFiles(
-  options: FileSearchOptions,
-): Promise<string[]> {
+export async function findCandidateFiles(options: FileSearchOptions): Promise<string[]> {
   const cacheKey = getOptionsCacheKey(options);
   const cached = await getCachedFiles(cacheKey);
 
@@ -180,24 +164,24 @@ export async function findCandidateFiles(
     return sortByMru(cached, mru);
   }
 
-  const spotlight = await findWithSpotlight(
+  const filesFromSearch = await searchRootsWithPartialFallback(
     options.roots,
-    options.allowedExtensions,
-    options.searchExcludes,
-    options.searchMaxDepth,
+    async (root) => {
+      const spotlight = await findWithSpotlight(
+        [root],
+        options.allowedExtensions,
+        options.searchExcludes,
+        options.searchMaxDepth,
+      );
+      return spotlight.files;
+    },
+    async (failedRoots) =>
+      findWithRecursiveScan(failedRoots, options.allowedExtensions, options.searchExcludes, options.searchMaxDepth),
   );
 
-  let files = spotlight.files;
+  let files = dedupeFiles(filesFromSearch);
 
-  if (spotlight.failedRoots.length > 0) {
-    const fallback = await findWithRecursiveScan(
-      spotlight.failedRoots,
-      options.allowedExtensions,
-      options.searchExcludes,
-      options.searchMaxDepth,
-    );
-    files = dedupeFiles([...files, ...fallback]);
-  } else if (files.length === 0) {
+  if (files.length === 0) {
     const fallback = await findWithRecursiveScan(
       options.roots,
       options.allowedExtensions,
@@ -214,9 +198,7 @@ export async function findCandidateFiles(
   return sortByMru(existing, mru);
 }
 
-export async function getCachedCandidateFiles(
-  options: FileSearchOptions,
-): Promise<string[] | undefined> {
+export async function getCachedCandidateFiles(options: FileSearchOptions): Promise<string[] | undefined> {
   const cacheKey = getOptionsCacheKey(options);
   const cached = await getCachedFiles(cacheKey);
   if (!cached) return undefined;

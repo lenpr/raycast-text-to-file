@@ -1,10 +1,4 @@
-import {
-  closeMainWindow,
-  PopToRootType,
-  showHUD,
-  showToast,
-  Toast,
-} from "@raycast/api";
+import { closeMainWindow, PopToRootType, showHUD, showToast, Toast } from "@raycast/api";
 import path from "node:path";
 import { undoLastAppend } from "./lib/append-history";
 

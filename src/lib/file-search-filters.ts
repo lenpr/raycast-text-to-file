@@ -39,9 +39,7 @@ function compileExcludes(searchExcludes: string[]): CompiledExclude[] {
       continue;
     }
 
-    const normalizedPattern = toPosix(
-      trimmed.replace(/^\.\/+/, "").replace(/^\/+/, ""),
-    );
+    const normalizedPattern = toPosix(trimmed.replace(/^\.\/+/, "").replace(/^\/+/, ""));
     compiled.push({
       matcher: wildcardToRegex(normalizedPattern),
       matchRelativePath: normalizedPattern.includes("/"),
@@ -54,30 +52,20 @@ function compileExcludes(searchExcludes: string[]): CompiledExclude[] {
 export function getRelativeDepth(root: string, filePath: string): number {
   const relative = toPosix(path.relative(root, filePath));
   if (relative === "" || relative === ".") return 0;
-  if (relative.startsWith("../") || relative === "..")
-    return Number.POSITIVE_INFINITY;
+  if (relative.startsWith("../") || relative === "..") return Number.POSITIVE_INFINITY;
   return relative.split("/").filter(Boolean).length;
 }
 
-function matchesCompiledExcludes(
-  filePath: string,
-  root: string,
-  excludes: CompiledExclude[],
-): boolean {
+function matchesCompiledExcludes(filePath: string, root: string, excludes: CompiledExclude[]): boolean {
   if (excludes.length === 0) return false;
 
   const absolutePath = normalizeForCompare(path.resolve(filePath));
-  const relativePath = normalizeForCompare(
-    toPosix(path.relative(root, filePath)),
-  );
+  const relativePath = normalizeForCompare(toPosix(path.relative(root, filePath)));
   const segments = relativePath.split("/").filter(Boolean);
 
   for (const exclude of excludes) {
     if (exclude.absolutePrefix) {
-      if (
-        absolutePath === exclude.absolutePrefix ||
-        absolutePath.startsWith(`${exclude.absolutePrefix}/`)
-      ) {
+      if (absolutePath === exclude.absolutePrefix || absolutePath.startsWith(`${exclude.absolutePrefix}/`)) {
         return true;
       }
       continue;
@@ -102,22 +90,11 @@ function matchesCompiledExcludes(
   return false;
 }
 
-export function isPathExcluded(
-  filePath: string,
-  root: string,
-  searchExcludes: string[],
-): boolean {
-  return matchesCompiledExcludes(
-    filePath,
-    root,
-    compileExcludes(searchExcludes),
-  );
+export function isPathExcluded(filePath: string, root: string, searchExcludes: string[]): boolean {
+  return matchesCompiledExcludes(filePath, root, compileExcludes(searchExcludes));
 }
 
-export function createPathExcluder(
-  searchExcludes: string[],
-): (filePath: string, root: string) => boolean {
+export function createPathExcluder(searchExcludes: string[]): (filePath: string, root: string) => boolean {
   const compiled = compileExcludes(searchExcludes);
-  return (filePath: string, root: string) =>
-    matchesCompiledExcludes(filePath, root, compiled);
+  return (filePath: string, root: string) => matchesCompiledExcludes(filePath, root, compiled);
 }

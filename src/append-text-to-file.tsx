@@ -14,14 +14,11 @@ export default function Command() {
       setIsLoading(true);
 
       try {
-        const clipboardText = await readClipboardTextAtOffset(
-          preferences.defaultClipboardOffset,
-        );
+        const clipboardText = await readClipboardTextAtOffset(preferences.defaultClipboardOffset);
         setText(clipboardText);
       } catch (error) {
         setText("");
-        const message =
-          error instanceof Error ? error.message : "Unable to read clipboard.";
+        const message = error instanceof Error ? error.message : "Unable to read clipboard.";
         await showToast({
           style: Toast.Style.Failure,
           title: "Clipboard read failed",
@@ -41,11 +38,5 @@ export default function Command() {
     void loadClipboard();
   }, [preferences.defaultClipboardOffset]);
 
-  return (
-    <TextToFileForm
-      navigationTitle="Append Text to File"
-      initialText={text}
-      isLoading={isLoading}
-    />
-  );
+  return <TextToFileForm navigationTitle="Append Text to File" initialText={text} isLoading={isLoading} />;
 }

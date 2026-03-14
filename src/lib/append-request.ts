@@ -7,10 +7,7 @@ export interface AppendRequest {
   insertPosition?: InsertPosition;
 }
 
-export function buildAppendRequest(
-  text: string,
-  insertPosition?: InsertPosition,
-): AppendRequest {
+export function buildAppendRequest(text: string, insertPosition?: InsertPosition): AppendRequest {
   return {
     text,
     snippet: toSnippet(text),

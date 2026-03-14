@@ -9,10 +9,9 @@ export default async function Command() {
     const lastAppendedFile = await getLastAppendedFile();
     const mruFiles = await getMruFiles();
 
-    const candidates = [
-      lastAppendedFile,
-      ...mruFiles.filter((filePath) => filePath !== lastAppendedFile),
-    ].filter((filePath): filePath is string => Boolean(filePath));
+    const candidates = [lastAppendedFile, ...mruFiles.filter((filePath) => filePath !== lastAppendedFile)].filter(
+      (filePath): filePath is string => Boolean(filePath),
+    );
 
     let targetFile: string | undefined;
     for (const filePath of candidates) {
@@ -26,9 +25,7 @@ export default async function Command() {
     }
 
     if (!targetFile) {
-      throw new Error(
-        "No accessible appended file found. Append a file first, or check that the file still exists.",
-      );
+      throw new Error("No accessible appended file found. Append a file first, or check that the file still exists.");
     }
 
     await open(targetFile);

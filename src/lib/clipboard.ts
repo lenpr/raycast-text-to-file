@@ -25,17 +25,13 @@ function extractUsableText(content: Clipboard.ReadContent): string | undefined {
   return rawText;
 }
 
-export async function readClipboardTextAtOffset(
-  offset: number,
-): Promise<string> {
+export async function readClipboardTextAtOffset(offset: number): Promise<string> {
   const safeOffset = normalizeOffset(offset);
   const content = await Clipboard.read({ offset: safeOffset });
   const text = extractUsableText(content);
 
   if (!text) {
-    throw new Error(
-      `Clipboard item at offset ${safeOffset} is not plain text.`,
-    );
+    throw new Error(`Clipboard item at offset ${safeOffset} is not plain text.`);
   }
 
   return text;
@@ -53,13 +49,8 @@ export interface ClipboardHistoryItem {
   snippet: string;
 }
 
-export async function readClipboardHistory(
-  maxOffset = MAX_CLIPBOARD_OFFSET,
-): Promise<ClipboardHistoryItem[]> {
-  const safeMaxOffset = Math.min(
-    normalizeOffset(maxOffset),
-    MAX_CLIPBOARD_OFFSET,
-  );
+export async function readClipboardHistory(maxOffset = MAX_CLIPBOARD_OFFSET): Promise<ClipboardHistoryItem[]> {
+  const safeMaxOffset = Math.min(normalizeOffset(maxOffset), MAX_CLIPBOARD_OFFSET);
   const items: ClipboardHistoryItem[] = [];
 
   for (let offset = 0; offset <= safeMaxOffset; offset += 1) {

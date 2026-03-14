@@ -1,4 +1,4 @@
-import { LocalStorage, environment } from "@raycast/api";
+import { LocalStorage, environment, trash } from "@raycast/api";
 import { access, mkdir, readFile, rm } from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
@@ -55,11 +55,7 @@ async function clearRecord(): Promise<void> {
   await LocalStorage.removeItem(LAST_APPEND_RECORD_KEY);
 }
 
-export async function recordLastAppend(
-  filePath: string,
-  beforeRaw: Buffer | null,
-  afterRaw: Buffer,
-): Promise<void> {
+export async function recordLastAppend(filePath: string, beforeRaw: Buffer | null, afterRaw: Buffer): Promise<void> {
   await mkdir(environment.supportPath, { recursive: true });
 
   const backupPath = getUndoBackupPath();
@@ -95,9 +91,7 @@ export async function undoLastAppend(): Promise<UndoLastAppendResult> {
   } catch (error) {
     const nodeError = error as NodeJS.ErrnoException;
     if (nodeError.code === "ENOENT") {
-      throw new Error(
-        "The file no longer exists, so undo cannot be safely applied.",
-      );
+      throw new Error("The file no longer exists, so undo cannot be safely applied.");
     }
     throw error;
   }
@@ -107,7 +101,7 @@ export async function undoLastAppend(): Promise<UndoLastAppendResult> {
   }
 
   if (!record.existedBefore) {
-    await rm(record.filePath, { force: false });
+    await trash(record.filePath);
     if (record.backupPath) {
       await rm(record.backupPath, { force: true });
     }

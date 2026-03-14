@@ -1,10 +1,5 @@
 import { LocalStorage } from "@raycast/api";
-import {
-  MAX_MRU_ITEMS,
-  MRU_STORAGE_KEY,
-  SEARCH_CACHE_STORAGE_KEY,
-  SEARCH_CACHE_TTL_MS,
-} from "./constants";
+import { MAX_MRU_ITEMS, MRU_STORAGE_KEY, SEARCH_CACHE_STORAGE_KEY, SEARCH_CACHE_TTL_MS } from "./constants";
 
 interface SearchCacheEntry {
   createdAt: number;
@@ -57,9 +52,7 @@ async function writePersistentCacheMap(map: SearchCacheMap): Promise<void> {
   await LocalStorage.setItem(SEARCH_CACHE_STORAGE_KEY, JSON.stringify(map));
 }
 
-export async function getCachedFiles(
-  cacheKey: string,
-): Promise<string[] | undefined> {
+export async function getCachedFiles(cacheKey: string): Promise<string[] | undefined> {
   const cacheEntry = searchCache.get(cacheKey);
   if (cacheEntry && !isExpired(cacheEntry)) {
     return cacheEntry.files;
@@ -76,10 +69,7 @@ export async function getCachedFiles(
   return persistedEntry.files;
 }
 
-export async function setCachedFiles(
-  cacheKey: string,
-  files: string[],
-): Promise<void> {
+export async function setCachedFiles(cacheKey: string, files: string[]): Promise<void> {
   const entry: SearchCacheEntry = {
     createdAt: Date.now(),
     files,
@@ -106,24 +96,18 @@ export async function getMruFiles(): Promise<string[]> {
 
 export async function touchMruFile(filePath: string): Promise<void> {
   const existing = await getMruFiles();
-  const deduped = [
-    filePath,
-    ...existing.filter((item) => item !== filePath),
-  ].slice(0, MAX_MRU_ITEMS);
+  const deduped = [filePath, ...existing.filter((item) => item !== filePath)].slice(0, MAX_MRU_ITEMS);
   await LocalStorage.setItem(MRU_STORAGE_KEY, JSON.stringify(deduped));
 }
 
 export function sortByMru(files: string[], mruFiles: string[]): string[] {
-  const ranks = new Map<string, number>(
-    mruFiles.map((file, index) => [file, index]),
-  );
+  const ranks = new Map<string, number>(mruFiles.map((file, index) => [file, index]));
 
   return [...files].sort((left, right) => {
     const leftRank = ranks.get(left);
     const rightRank = ranks.get(right);
 
-    if (leftRank !== undefined && rightRank !== undefined)
-      return leftRank - rightRank;
+    if (leftRank !== undefined && rightRank !== undefined) return leftRank - rightRank;
     if (leftRank !== undefined) return -1;
     if (rightRank !== undefined) return 1;
 

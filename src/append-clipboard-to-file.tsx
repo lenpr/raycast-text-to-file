@@ -12,10 +12,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FilePicker } from "./components/FilePicker";
 import { TextToFileForm } from "./components/TextToFileForm";
 import { buildAppendRequest } from "./lib/append-request";
-import {
-  readClipboardHistory,
-  type ClipboardHistoryItem,
-} from "./lib/clipboard";
+import { readClipboardHistory, type ClipboardHistoryItem } from "./lib/clipboard";
 
 export default function Command() {
   const { push } = useNavigation();
@@ -30,10 +27,7 @@ export default function Command() {
       setHistoryItems(items);
     } catch (error) {
       setHistoryItems([]);
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Unable to read clipboard history.";
+      const message = error instanceof Error ? error.message : "Unable to read clipboard history.";
       await showToast({
         style: Toast.Style.Failure,
         title: "Clipboard history failed",
@@ -56,12 +50,7 @@ export default function Command() {
 
   const openFilePicker = useCallback(
     (item: ClipboardHistoryItem) => {
-      push(
-        <FilePicker
-          request={buildAppendRequest(item.text)}
-          navigationTitle="Append Text from Clipboard to File"
-        />,
-      );
+      push(<FilePicker request={buildAppendRequest(item.text)} navigationTitle="Append Text from Clipboard to File" />);
     },
     [push],
   );
@@ -95,14 +84,8 @@ export default function Command() {
           detail={<List.Item.Detail markdown={item.text} />}
           actions={
             <ActionPanel>
-              <Action
-                title="Choose File and Append"
-                onAction={() => openFilePicker(item)}
-              />
-              <Action
-                title="Edit Then Choose File"
-                onAction={() => openEditor(item)}
-              />
+              <Action title="Choose File and Append" onAction={() => openFilePicker(item)} />
+              <Action title="Edit Then Choose File" onAction={() => openEditor(item)} />
               <Action
                 title="Refresh Clipboard History"
                 icon={Icon.ArrowClockwise}
@@ -120,14 +103,8 @@ export default function Command() {
           description="Copy some text and refresh clipboard history."
           actions={
             <ActionPanel>
-              <Action
-                title="Refresh Clipboard History"
-                onAction={() => void loadHistory()}
-              />
-              <Action
-                title="Write Text Manually"
-                onAction={() => openEditor()}
-              />
+              <Action title="Refresh Clipboard History" onAction={() => void loadHistory()} />
+              <Action title="Write Text Manually" onAction={() => openEditor()} />
               <Action
                 title="Open Extension Preferences"
                 icon={Icon.Gear}

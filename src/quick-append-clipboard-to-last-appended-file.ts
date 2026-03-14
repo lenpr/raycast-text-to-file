@@ -1,11 +1,4 @@
-import {
-  closeMainWindow,
-  openExtensionPreferences,
-  PopToRootType,
-  showHUD,
-  showToast,
-  Toast,
-} from "@raycast/api";
+import { closeMainWindow, openExtensionPreferences, PopToRootType, showHUD, showToast, Toast } from "@raycast/api";
 import path from "node:path";
 import { appendTextToFile, createAppendOptions } from "./lib/append";
 import { getLastAppendedFile } from "./lib/append-history";
@@ -21,29 +14,20 @@ export default async function Command() {
     const targetFile = lastAppendedFile ?? mruFiles[0];
 
     if (!targetFile) {
-      throw new Error(
-        "No appended file yet. Use 'Append Text from Clipboard to File' once first.",
-      );
+      throw new Error("No appended file yet. Use 'Append Text from Clipboard to File' once first.");
     }
 
     const text = await readClipboardTextAtOffset(0);
 
-    await appendTextToFile(
-      targetFile,
-      text,
-      createAppendOptions(preferences, "raw"),
-    );
+    await appendTextToFile(targetFile, text, createAppendOptions(preferences, "raw"));
 
-    await showHUD(
-      `Quick appended current clipboard to ${path.basename(targetFile)}`,
-    );
+    await showHUD(`Quick appended current clipboard to ${path.basename(targetFile)}`);
     await closeMainWindow({
       clearRootSearch: true,
       popToRootType: PopToRootType.Immediate,
     });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Quick append failed.";
+    const message = error instanceof Error ? error.message : "Quick append failed.";
     await showToast({
       style: Toast.Style.Failure,
       title: "Quick append failed",

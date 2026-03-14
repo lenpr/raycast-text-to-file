@@ -3,18 +3,9 @@ import path from "node:path";
 import { atomicWriteFile } from "./atomic-write";
 import { recordLastAppend } from "./append-history";
 import { touchMruFile } from "./cache";
-import {
-  decodeTextBuffer,
-  encodeTextBuffer,
-  type TextEncoding,
-} from "./encoding";
+import { decodeTextBuffer, encodeTextBuffer, type TextEncoding } from "./encoding";
 import { assertPathAllowedByExtensions } from "./file-policy";
-import {
-  applyAppendStyle,
-  type AppendStyle,
-  composeAppendedContent,
-  type InsertPosition,
-} from "./formatting";
+import { applyAppendStyle, type AppendStyle, composeAppendedContent, type InsertPosition } from "./formatting";
 import { type ResolvedPreferences } from "./preferences";
 
 export interface AppendOptions {
@@ -47,9 +38,7 @@ export function createAppendOptions(
   };
 }
 
-async function readTextWithEncoding(
-  filePath: string,
-): Promise<ExistingFileState> {
+async function readTextWithEncoding(filePath: string): Promise<ExistingFileState> {
   try {
     const raw = await readFile(filePath);
     const decoded = decodeTextBuffer(raw);
@@ -72,11 +61,7 @@ async function readTextWithEncoding(
   }
 }
 
-export async function appendTextToFile(
-  filePath: string,
-  text: string,
-  options: AppendOptions,
-): Promise<void> {
+export async function appendTextToFile(filePath: string, text: string, options: AppendOptions): Promise<void> {
   assertPathAllowedByExtensions(filePath, options.allowedExtensions);
 
   const entry = applyAppendStyle(text, {
@@ -84,11 +69,7 @@ export async function appendTextToFile(
     timestampFormat: options.timestampFormat,
   });
 
-  const {
-    text: existingText,
-    encoding,
-    beforeRaw,
-  } = await readTextWithEncoding(filePath);
+  const { text: existingText, encoding, beforeRaw } = await readTextWithEncoding(filePath);
   const merged = composeAppendedContent(existingText, entry, {
     separator: options.separator,
     ensureTrailingNewline: options.ensureTrailingNewline,

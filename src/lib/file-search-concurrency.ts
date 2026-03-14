@@ -7,9 +7,7 @@ export async function searchRootsInParallel(
   roots: string[],
   searchRoot: (root: string) => Promise<string[]>,
 ): Promise<RootSearchSummary> {
-  const settled = await Promise.allSettled(
-    roots.map((root) => searchRoot(root)),
-  );
+  const settled = await Promise.allSettled(roots.map((root) => searchRoot(root)));
   const files: string[] = [];
   const failedRoots: string[] = [];
 
@@ -58,10 +56,7 @@ export async function filterByAsyncPredicate<T>(
 ): Promise<T[]> {
   if (input.length === 0) return [];
 
-  const safeConcurrency = Math.min(
-    normalizeConcurrency(concurrency),
-    input.length,
-  );
+  const safeConcurrency = Math.min(normalizeConcurrency(concurrency), input.length);
   const keep = new Array<boolean>(input.length).fill(false);
   let index = 0;
 
